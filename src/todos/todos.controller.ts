@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -41,6 +42,13 @@ export class TodosController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.todosService.findOne(+id);
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({ summary: 'Update todo status by id' })
+  @Put(':id/status')
+  updateStatus(@Param('id') id: string) {
+    return this.todosService.updateStatus(+id);
   }
 
   @ApiOkResponse()

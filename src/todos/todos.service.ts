@@ -71,6 +71,23 @@ export class TodosService {
     }
   }
 
+  async updateStatus(id: number) {
+    const todo = await this.findOne(id);
+    try {
+      return await this.httpService.axiosRef
+        .patch<Todo>(`https://jsonplaceholder.typicode.com/todos/${id}`, {
+          ...todo,
+          completed: !todo.completed,
+        })
+        .then((response) => {
+          this.cacheHelper.del(`todo-${id}`);
+          return response.data;
+        });
+    } catch (error) {
+      throw new HttpException(error.response.statusText, error.response.status);
+    }
+  }
+
   async remove(id: number) {
     const todo = await this.findOne(id);
     try {
