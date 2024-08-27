@@ -7,6 +7,11 @@ import { ResponseWrapperInterceptor } from './common/interceptors/response-wrapp
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // API Prefix
+  app.setGlobalPrefix('api', {
+    exclude: ['api-docs', '/'],
+  });
+
   // Enable CORS
   app.enableCors({ origin: '*' });
 
@@ -34,4 +39,5 @@ async function bootstrap() {
     'Bootstrap',
   );
 }
+
 bootstrap();
