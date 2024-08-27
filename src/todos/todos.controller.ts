@@ -1,0 +1,59 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CreateTodoDto } from './dto/create-todo.dto';
+import { UpdateTodoDto } from './dto/update-todo.dto';
+import { TodosService } from './todos.service';
+
+@ApiTags('Todos')
+@Controller('todos')
+export class TodosController {
+  constructor(private readonly todosService: TodosService) {}
+
+  @ApiCreatedResponse()
+  @ApiOperation({ summary: 'Create todo' })
+  @Post()
+  create(@Body() createTodoDto: CreateTodoDto) {
+    return this.todosService.create(createTodoDto);
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({ summary: 'Get all todos' })
+  @Get()
+  findAll() {
+    return this.todosService.findAll();
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({ summary: 'Get todo by id' })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.todosService.findOne(+id);
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({ summary: 'Update todo by id' })
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+    return this.todosService.update(+id, updateTodoDto);
+  }
+
+  @ApiOkResponse()
+  @ApiOperation({ summary: 'Delete todo by id' })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.todosService.remove(+id);
+  }
+}
