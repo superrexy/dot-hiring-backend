@@ -1,12 +1,16 @@
 import { HttpService } from '@nestjs/axios';
 import { HttpException, Injectable } from '@nestjs/common';
+import { CacheHelperService } from '../common/cache-helper/cache-helper.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo } from './entities/todo.entity';
 
 @Injectable()
 export class TodosService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly cacheHelper: CacheHelperService,
+  ) {}
 
   async create(createTodoDto: CreateTodoDto) {
     try {
@@ -20,9 +24,15 @@ export class TodosService {
 
   async findAll() {
     try {
-      return await this.httpService.axiosRef
-        .get<Todo[]>(`https://jsonplaceholder.typicode.com/todos`)
-        .then((response) => response.data);
+      const todos = await this.cacheHelper.get<Todo[]>('todos');
+      if (todos) return todos;
+      else
+        return await this.httpService.axiosRef
+          .get<Todo[]>(`https://jsonplaceholder.typicode.com/todos`)
+          .then((response) => {
+            this.cacheHelper.set('todos', response.data);
+            return response.data;
+          });
     } catch (error) {
       throw new HttpException(error.response.statusText, error.response.status);
     }
@@ -30,9 +40,15 @@ export class TodosService {
 
   async findOne(id: number) {
     try {
-      return await this.httpService.axiosRef
-        .get<Todo>(`https://jsonplaceholder.typicode.com/todos/${id}`)
-        .then((response) => response.data);
+      const todo = await this.cacheHelper.get<Todo>(`todo-${id}`);
+      if (todo) return todo;
+      else
+        return await this.httpService.axiosRef
+          .get<Todo>(`https://jsonplaceholder.typicode.com/todos/${id}`)
+          .then((response) => {
+            this.cacheHelper.set(`todo-${id}`, response.data);
+            return response.data;
+          });
     } catch (error) {
       throw new HttpException(error.response.statusText, error.response.status);
     }
@@ -46,7 +62,10 @@ export class TodosService {
           ...todo,
           ...updateTodoDto,
         })
-        .then((response) => response.data);
+        .then((response) => {
+          this.cacheHelper.del(`todo-${id}`);
+          return response;
+        });
     } catch (error) {
       throw new HttpException(error.response.statusText, error.response.status);
     }
@@ -57,7 +76,9 @@ export class TodosService {
     try {
       return this.httpService.axiosRef
         .delete(`https://jsonplaceholder.typicode.com/todos/${todo}`)
-        .then(() => null);
+        .then(() => {
+          this.cacheHelper.del(`todo-${id}`);
+        });
     } catch (error) {
       throw new HttpException(error.response.statusText, error.response.status);
     }
