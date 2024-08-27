@@ -25,6 +25,7 @@ cp .env.example .env
 ```
 
 4. **Setup Database with Your Credentials**
+
    For Database Driver reference [Prisma Database Driver](https://www.prisma.io/docs/orm/overview/databases)
 
 ```env
