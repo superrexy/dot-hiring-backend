@@ -57,3 +57,8 @@ http://localhost:3000/api-docs
 ```
 http://localhost:3000/api-docs-json
 ```
+
+## Demo Testing
+```
+http://103.76.129.93:34343/api-docs
+```
