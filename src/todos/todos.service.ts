@@ -64,7 +64,7 @@ export class TodosService {
         })
         .then((response) => {
           this.cacheHelper.del(`todo-${id}`);
-          return response;
+          return response.data;
         });
     } catch (error) {
       throw new HttpException(error.response.statusText, error.response.status);

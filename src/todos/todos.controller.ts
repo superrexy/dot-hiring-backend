@@ -18,6 +18,8 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodosService } from './todos.service';
 
+export type idString = string;
+
 @ApiTags('Todos')
 @Controller('todos')
 export class TodosController {
@@ -40,21 +42,21 @@ export class TodosController {
   @ApiOkResponse()
   @ApiOperation({ summary: 'Get todo by id' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: idString) {
     return this.todosService.findOne(+id);
   }
 
   @ApiOkResponse()
   @ApiOperation({ summary: 'Update todo status by id' })
   @Put(':id/status')
-  updateStatus(@Param('id') id: string) {
+  updateStatus(@Param('id') id: idString) {
     return this.todosService.updateStatus(+id);
   }
 
   @ApiOkResponse()
   @ApiOperation({ summary: 'Update todo by id' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
+  update(@Param('id') id: idString, @Body() updateTodoDto: UpdateTodoDto) {
     return this.todosService.update(+id, updateTodoDto);
   }
 
