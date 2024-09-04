@@ -14,12 +14,25 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
   body      String
   userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Comment   Comment[]
 
   @@map("posts")
+}
+
+model Comment {
+  id                Int       @id @default(autoincrement())
+  postId            Int
+  post              Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content           String
+  comment_nested_id Int?
+  comment_nested    Comment?  @relation("CommentNested", fields: [comment_nested_id], references: [id])
+  Comment           Comment[] @relation("CommentNested")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }

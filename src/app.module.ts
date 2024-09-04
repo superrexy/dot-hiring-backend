@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { CacheHelperModule } from './common/cache-helper/cache-helper.module';
 import { PostsModule } from './posts/posts.module';
 import { TodosModule } from './todos/todos.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { TodosModule } from './todos/todos.module';
     TodosModule,
     PostsModule,
     CacheHelperModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
