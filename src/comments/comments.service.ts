@@ -8,32 +8,32 @@ export class CommentsService {
   private getNestedLevel(level: number) {
     if (level === 1)
       return {
-        where: {
-          comment_nested_id: null,
-        },
+        Comment: {},
       };
 
     return {
-      where: {
-        comment_nested_id: null,
-      },
-      include: {
-        Comment: {
-          include: {
-            Comment: true,
-          },
-        },
+      Comment: {
+        include: this.getNestedLevel(level - 1),
       },
     };
   }
 
   async findAll(postId: number) {
+    const comments = await this.prisma.comment.count({
+      where: {
+        postId,
+      },
+    });
+
     const post = await this.prisma.post.findFirst({
       where: {
         id: postId,
       },
       include: {
-        Comment: this.getNestedLevel(10000),
+        Comment: {
+          where: { comment_nested_id: null },
+          include: this.getNestedLevel(comments),
+        },
       },
     });
     console.log(post);
