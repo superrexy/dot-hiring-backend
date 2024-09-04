@@ -36,7 +36,6 @@ export class CommentsService {
         },
       },
     });
-    console.log(post);
 
     if (!post) throw new NotFoundException();
 
